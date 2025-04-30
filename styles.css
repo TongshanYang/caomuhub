@@ -1,0 +1,200 @@
+/* 全局样式 */
+body {
+    background-color: #f4f4f5;
+    font-family: sans-serif;
+    margin: 0; /* 去除默认的body外边距 */
+}
+
+/* 容器样式 */
+.container {
+    margin-left: auto;
+    margin-right: auto;
+    padding: 2rem;
+    display: flex;
+    min-height: calc(90vh - 4rem); /* 减去上下padding的高度 */
+}
+
+/* 侧边栏样式 */
+.sidebar {
+    background-color: #ffffff;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border-radius: 0.5rem;
+    width: 50px;
+    min-height: 100%;
+    padding: 20px;
+    margin-right: 10px;
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    margin-bottom: 10px;
+}
+
+.sidebar ul li a {
+    color: #27272a;
+    text-decoration: none;
+    font-size: 1.5rem;
+}
+
+/* 内容区域样式 */
+.content {
+    background-color: #ffffff;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border-radius: 0.5rem;
+    padding: 2rem;
+    flex: 1;
+    max-height: calc(90vh - 4rem); /* 减去上下padding的高度 */
+    overflow-y: auto; /* 当内容超出时显示垂直滚动条 */
+}
+
+/* 首页样式 */
+.shouye {
+    font-size: 100px;
+    text-align: center; /* 水平居中 */
+    display: none;
+    justify-content: center;
+    align-items: center; /* 垂直居中 */
+    height: 80vh; /* 让容器占据整个视口高度 */
+}
+
+/* 简历样式 */
+.jianli {
+    display: block;
+}
+
+/* 笔记样式 */
+.biji {
+    display: none;
+}
+
+/* 作品样式 */
+.zuopin {
+    display: none;
+}
+
+/* 头部样式 */
+.header {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+    .header {
+        flex-direction: row;
+    }
+}
+
+.header h1 {
+    font-size: 2.25rem;
+    font-weight: bold;
+    color: #27272a;
+}
+
+.header p {
+    font-size: 1.125rem;
+    color: #4b5563;
+}
+
+.header img {
+    width: 8rem;
+    height: 8rem;
+    border-radius: 9999px;
+    object-fit: cover;
+}
+
+@media (min-width: 768px) {
+    .header img {
+        width: 10rem;
+        height: 10rem;
+    }
+}
+
+/* 章节样式 */
+.section {
+    border-top: 1px solid #d4d4d8;
+    padding-top: 2rem;
+}
+
+.section h2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #27272a;
+    margin-bottom: 1rem;
+}
+
+.section ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.section li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.section i {
+    margin-right: 0.5rem;
+    color: #4b5563;
+}
+
+.section a {
+    color: #2563eb;
+    text-decoration: none;
+}
+
+.section a:hover {
+    text-decoration: underline;
+}
+
+/* 页脚样式 */
+.footer {
+    text-align: center;
+    color: #71717a;
+    font-size: 0.875rem;
+    padding: 1rem;
+}
+
+.footer a {
+    text-decoration: none;
+    color: #27272a;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}
+
+/* 淡入淡出动画 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.1s ease-in-out forwards;
+}
+
+.fade-out {
+    animation: fadeOut 0.1s ease-in-out forwards;
+    display: none;
+}
