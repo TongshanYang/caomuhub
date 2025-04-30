@@ -1,17 +1,25 @@
 /* 全局样式 */
-body {
+html, body {
+    height: 100%; /* 让 html 和 body 占满窗口高度 */
+    margin: 0; /* 去除默认的外边距 */
+    padding: 0; /* 去除默认的内边距 */
     background-color: #f4f4f5;
     font-family: sans-serif;
-    margin: 0; /* 去除默认的body外边距 */
+}
+
+body {
+    display: flex; /* 使用 flexbox 布局 */
+    flex-direction: column; /* 垂直排列子元素 */
 }
 
 /* 容器样式 */
 .container {
-    margin-left: auto;
-    margin-right: auto;
+    flex: 9; /* 占据 9 份高度 */
+    margin: 0 0;
     padding: 2rem;
     display: flex;
-    min-height: calc(90vh - 4rem); /* 减去上下padding的高度 */
+    min-height: 0; /* 防止 flex 布局下高度计算异常 */
+    flex-direction: column; /* 默认垂直排列 */
 }
 
 /* 侧边栏样式 */
@@ -19,19 +27,18 @@ body {
     background-color: #ffffff;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     border-radius: 0.5rem;
-    width: 50px;
-    min-height: 100%;
-    padding: 20px;
-    margin-right: 10px;
+    margin-bottom: 20px; /* 下方留出间距 */
 }
 
 .sidebar ul {
     list-style-type: none;
     padding: 0;
+    display: flex; /* 横向排列 */
+    justify-content: center; /* 水平居中 */
 }
 
 .sidebar ul li {
-    margin-bottom: 10px;
+    margin: 0 10px; /* 左右留出间距 */
 }
 
 .sidebar ul li a {
@@ -47,7 +54,7 @@ body {
     border-radius: 0.5rem;
     padding: 2rem;
     flex: 1;
-    max-height: calc(90vh - 4rem); /* 减去上下padding的高度 */
+    max-height: 100%; /* 修改为 100% 以适应容器高度 */
     overflow-y: auto; /* 当内容超出时显示垂直滚动条 */
 }
 
@@ -58,7 +65,7 @@ body {
     display: none;
     justify-content: center;
     align-items: center; /* 垂直居中 */
-    height: 80vh; /* 让容器占据整个视口高度 */
+    height: 100%; /* 修改为 100% 以适应容器高度 */
 }
 
 /* 简历样式 */
@@ -88,6 +95,24 @@ body {
 @media (min-width: 768px) {
     .header {
         flex-direction: row;
+    }
+    /* 窗口宽度大于等于 768px 时，恢复 sidebar 原始布局 */
+    .container {
+        flex-direction: row;
+    }
+    .sidebar {
+        width: 50px;
+        padding: 1rem;
+        margin-right: 10px;
+        margin-bottom: 0;
+    }
+    .sidebar ul {
+        display: block;
+    }
+    .sidebar ul li {
+        margin-bottom: 10px;
+        margin-left: 0;
+        margin-right: 0;
     }
 }
 
@@ -156,10 +181,14 @@ body {
 
 /* 页脚样式 */
 .footer {
+    flex: 1; /* 占据 1 份高度 */
     text-align: center;
     color: #71717a;
     font-size: 0.875rem;
     padding: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .footer a {
