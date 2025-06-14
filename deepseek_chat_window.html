@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>聊天窗口</title>
-    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
         /* 基础样式 */
         body {
@@ -20,16 +20,7 @@
             margin: 0 auto;
             padding: 1rem;
         }
-        
-        .chat-container {
-            background-color: white;
-            border-radius: 1rem;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-            height: 80vh;
-            display: flex;
-            flex-direction: column;
-        }
-        
+                
         /* API设置区域 */
         .api-settings {
             margin-bottom: 1rem;
@@ -55,6 +46,15 @@
             box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
         }
         
+        .chat-container {
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+        }
+
         /* 聊天头部 */
         .chat-header {
             background-color: #4F46E5;
@@ -65,42 +65,23 @@
             justify-content: space-between;
             border-bottom: 1px solid rgba(255, 255, 255, 0.2);
         }
-        
+
         .chat-header-left {
             display: flex;
             align-items: center;
             gap: 0.75rem;
         }
-        
-        .avatar {
-            width: 2.5rem;
-            height: 2.5rem;
-            border-radius: 50%;
-            background-color: rgba(255, 255, 255, 0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .avatar i {
-            font-size: 1.25rem;
-        }
-        
+
         .chat-title {
             font-weight: bold;
             font-size: 1.125rem;
         }
-        
-        .chat-status {
-            font-size: 0.75rem;
-            opacity: 0.8;
-        }
-        
+
         .chat-header-right {
             display: flex;
             gap: 0.75rem;
         }
-                
+
         /* 聊天内容区域 */
         .chat-messages {
             flex: 1;
@@ -292,15 +273,18 @@
             <!-- 聊天头部 -->
             <div class="chat-header">
                 <div class="chat-header-left">
-                    <div class="avatar">
-                        <i class="fa fa-comments-o text-xl"></i>
-                    </div>
-                    <div>
-                        <div class="chat-title">DeepSeek AI聊天助手</div>
-                        <div class="chat-status">正在连接...</div>
+                    <div class="chat-title">DeepSeek AI聊天助手</div>
+                    <!-- 用户正在输入提示 -->
+                    <div id="typing-indicator" class="typing-indicator">
+                        <div class="typing-animation">
+                            <div class="typing-dot"></div>
+                            <div class="typing-dot"></div>
+                            <div class="typing-dot"></div>
+                        </div>
                     </div>
                 </div>
                 <div class="chat-header-right">
+
                 </div>
             </div>
             
@@ -313,9 +297,6 @@
                 
                 <!-- 欢迎消息 -->
                 <div class="message received animate-fade-in-up">
-                    <div class="avatar" style="background-color: rgba(79, 70, 229, 0.2);">
-                        <i class="fa fa-user-o text-primary"></i>
-                    </div>
                     <div>
                         <div class="message-content">
                             <p>您好！我是基于DeepSeek的AI助手，有什么可以帮助您的吗？</p>
@@ -323,26 +304,17 @@
                         <div class="message-time">14:30</div>
                     </div>
                 </div>
-                
-                <!-- 用户正在输入提示 -->
-                <div id="typing-indicator" class="typing-indicator">
-                    <div class="avatar" style="background-color: rgba(79, 70, 229, 0.2);">
-                        <i class="fa fa-user-o text-primary"></i>
-                    </div>
-                    <div class="typing-animation">
-                        <div class="typing-dot"></div>
-                        <div class="typing-dot"></div>
-                        <div class="typing-dot"></div>
-                    </div>
-                </div>
             </div>
             
             <!-- 聊天输入区域 -->
             <div class="chat-input-area">
                 <div class="input-container">
+                    <button id="listen-button" class="send-button">
+                        语音
+                    </button>
                     <input id="message-input" type="text" placeholder="输入消息..." class="message-input">
                     <button id="send-button" class="send-button">
-                        <i class="fa fa-paper-plane"></i>
+                        发送
                     </button>
                 </div>
             </div>
@@ -357,6 +329,7 @@
         const typingIndicator = document.getElementById('typing-indicator');
         const apiKeyInput = document.getElementById('api-key');
         const apiError = document.getElementById('api-error');
+        const listenButton = document.getElementById('listen-button');
         
         // 消息历史
         let messages = [
@@ -374,9 +347,6 @@
             // 添加用户消息到聊天窗口
             const userMessageHTML = `
                 <div class="message sent animate-fade-in-up">
-                    <div class="avatar">
-                        <i class="fa fa-user-o text-gray-500"></i>
-                    </div>
                     <div>
                         <div class="message-content">
                             <p>${escapeHtml(message)}</p>
@@ -404,15 +374,15 @@
                 const response = await callDeepSeekAPI(message);
                 hideTypingIndicator();
                 
+                // 将 Markdown 转换为 HTML
+                const aiMessageHtmlContent = marked.parse(response);
+
                 // 添加AI回复到聊天窗口
                 const aiMessageHTML = `
                     <div class="message received animate-fade-in-up">
-                        <div class="avatar" style="background-color: rgba(79, 70, 229, 0.2);">
-                            <i class="fa fa-user-o text-primary"></i>
-                        </div>
                         <div>
                             <div class="message-content">
-                                <p>${escapeHtml(response)}</p>
+                                ${aiMessageHtmlContent}
                             </div>
                             <div class="message-time">${getCurrentTime()}</div>
                         </div>
@@ -425,6 +395,9 @@
                 
                 // 滚动到底部
                 scrollToBottom();
+
+                // 朗读
+                speak(aiMessageHtmlContent);
             } catch (error) {
                 console.error('API调用失败:', error);
                 hideTypingIndicator();
@@ -496,6 +469,7 @@
         
         // 添加事件监听器
         sendButton.addEventListener('click', sendMessage);
+        listenButton.addEventListener('click', startListen);
         
         messageInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
@@ -507,6 +481,65 @@
         document.addEventListener('DOMContentLoaded', () => {
             messageInput.focus();
         });
+
+        function speak(text, lang = 'zh-CN') {
+            // 检查浏览器是否支持SpeechSynthesis API
+            if ('speechSynthesis' in window) {
+                speechSynthesis.cancel();
+
+                const utterance = new SpeechSynthesisUtterance(stripHtml(text));
+                utterance.lang = lang;
+
+                // 控制语速、音高、音量
+                utterance.rate = 1.0;
+                utterance.pitch = 1.0;
+                utterance.volume = 1.0;
+
+                // 兼容处理：等待voices列表加载完成
+                function loadVoices() {
+                    const voices = speechSynthesis.getVoices();
+
+                    if (voices.length > 0) {
+                        // 找到匹配语言的语音
+                        const voice = voices.find(v => v.lang === lang);
+                        if (voice) utterance.voice = voice;
+
+                        // 开始朗读
+                        speechSynthesis.speak(utterance);
+                    }
+                }
+
+                // 初始化语音加载
+                loadVoices();
+
+                // 监听voiceschanged事件（适用于Chrome等浏览器）
+                speechSynthesis.onvoiceschanged = loadVoices;
+            } else {
+                console.error('浏览器不支持文本转语音功能');
+            }
+        }
+
+        function stripHtml(html) {
+            return html.replace(/<[^>]*>/g, '');
+        }
+
+        function startListen() {
+            const recognition = new webkitSpeechRecognition(); // Chrome
+            recognition.lang = 'zh-CN';
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                messageInput.value = transcript;
+                sendMessage();
+            };
+            recognition.onstart = () => {
+                listenButton.innerText = '聆听';
+            };
+            recognition.onend = () => {
+                recognition.stop();
+                listenButton.innerText = '语音';
+            };
+            recognition.start();
+        }
     </script>
 </body>
 </html>
